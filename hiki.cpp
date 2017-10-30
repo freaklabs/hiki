@@ -1,6 +1,6 @@
 #include "hiki.h"
 
-#define LCD_ADDRESS 0x27
+#define LCD_ADDRESS 0x3F
 #define DHTPIN  4
 #define DHTTYPE DHT11
 
@@ -31,6 +31,28 @@ void Hiki::begin()
 		pinMode(chan[i], OUTPUT);
 		digitalWrite(chan[i], LOW);
 	}
+}
+
+/*************************************************************
+
+*************************************************************/
+void Hiki::poll()
+{
+    uint8_t val[2];
+
+    for (int i=0; i<NUM_BUTTONS; i++)
+    {
+        val[i] = digitalRead(buttonPin[i]);
+        if (val[i] != prevButtonState[i])
+        {
+            if (val[i] == LOW)
+            {
+                buttonFlag[i] = true;
+                delay(10);
+            }
+        }   
+        prevButtonState[i] = val[i]; 
+    }
 }
 
 /*************************************************************
@@ -79,6 +101,17 @@ uint8_t Hiki::read(uint8_t knob)
 /*************************************************************
 
 *************************************************************/
+bool Hiki::button(uint8_t button)
+{
+    bool val = buttonFlag[button];
+    buttonFlag[button] = false;
+    delay(3);
+    return val;
+}
+
+/*************************************************************
+
+*************************************************************/
 void Hiki::print(const char *msg)
 {
     lcd.print(msg);
@@ -115,6 +148,15 @@ void Hiki::setCursor(uint8_t col, uint8_t row)
 {
     lcd.setCursor(col, row);
 }
+
+/*************************************************************
+
+*************************************************************/
+void Hiki::home()
+{
+    lcd.home();
+}
+
 
 /*************************************************************
 

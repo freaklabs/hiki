@@ -9,14 +9,18 @@
 enum
 {
 	NUM_CHANNELS = 4,
-	NUM_KNOBS = 2
+	NUM_KNOBS = 2,
+	NUM_BUTTONS = 2
 };
 
 class Hiki
 {
 public:
+	byte buttonPin[2] = {3, 16};
+	byte prevButtonState[2] = {1, 1};
 	byte knobPin[2] = {14, 15};
 	byte chan[4] = {9, 10, 5, 6};
+	bool buttonFlag[2] = {false, false};
 	ts_t time;
 	char buf[50];
 	uint32_t startTime;
@@ -28,10 +32,13 @@ public:
 	void on(uint8_t);
 	void off(uint8_t);
 	uint8_t read(uint8_t);
+	void poll();
+	bool button(uint8_t button);
 	void print(char);
 	void print(const char *);
 	void print(uint8_t );
 	void print(float );
+	void home();
 	void setCursor(uint8_t, uint8_t);
 	void clear();
 	void setTime(uint8_t, uint8_t, uint8_t);
